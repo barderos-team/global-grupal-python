@@ -1,1 +1,0 @@
-Exlpicación del trabajo xd
