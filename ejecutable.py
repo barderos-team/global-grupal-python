@@ -31,18 +31,21 @@ Por ejemplo: una fila válida seria: ATCGAT
             print("¡Error! La fila debe tener exactamente 6 letras y solo puede contener A, T, C, G")
     return matriz
 
+
 def mostrar_matriz(matriz: list[str]) -> None:
     for fila in matriz:
         print(' '.join(map(str, fila)))
     print()  
 
-def validar_posicion_virus(fila: int, columna: int) -> bool:
-    
+def validar_posicion_mutacion(fila: int, columna: int) -> bool:
+    print("Ejecutando validacion de posicion...")
     if fila > 2 or columna > 2: 
-        print("\n¡Error! Para mutación diagonal, la fila y columna deben ser máximo 2")
+        print("\n¡Error! Para mutar correctamente, la fila y columna deben ser máximo 2")
         print("(necesitamos espacio para 4 bases en diagonal)")
         return False
-    return True
+    else:
+        print("Posicion evaluada como correcta")    
+        return True
 
 def main() -> None:
     matriz = obtener_matriz()
@@ -142,57 +145,56 @@ La estructura genética mantiene su configuración estándar."""
             print("\nLas filas y columnas se numeran del 0 al 5")
             fila = int(input("Numero de fila inicial (0-5): "))
             columna = int(input("Numero de columna inicial (0-5): "))
-            
-            if tipo == "1":
-                while True:
-                    try:
-                        print("\nConfigurando mutación por radiación:")
-                        intensidad = int(input("Intensidad de radiación (1-100%): "))
-                        duracion = int(input("Tiempo de exposición (1-365 días): "))
-                        mutador = Radiacion(base, intensidad, duracion)
-                        break
-                    except ValueError as e:
-                        print(f"\n¡Error! {e}")
-                        print("Por favor, ajuste los parámetros nuevamente.\n")
+
+             
+            if validar_posicion_mutacion(fila, columna):
+                while True:  
+                    if tipo == "1":  
+                            try:
+                                print("\nConfigurando mutación por radiación:")
+                                intensidad = int(input("Intensidad de radiación (1-100%): "))
+                                duracion = int(input("Tiempo de exposición (1-365 días): "))
+                                mutador = Radiacion(base, intensidad, duracion)
+
+                                orientacion = input("Orientación (h: horizontal, v: vertical): ")
+                                matriz_original = matriz.copy()  
+                                matriz = mutador.crear_mutante(matriz, (fila, columna), orientacion)
+                                print(f"\nMutación por radiación completada:")
+                                print(f"Intensidad: {mutador.intensidad}%") 
+                                print(f"Tiempo de exposición: {mutador.duracion} días")
+                                print(f"Efecto total de radiación: {mutador.efecto_total} unidades de daño")
                 
-                orientacion = input("Orientación (h: horizontal, v: vertical): ")
-                matriz_original = matriz.copy()  
-                matriz = mutador.crear_mutante(matriz, (fila, columna), orientacion)
-                print(f"\nMutación por radiación completada:")
-                print(f"Intensidad: {mutador.intensidad}%") 
-                print(f"Tiempo de exposición: {mutador.duracion} días")
-                print(f"Efecto total de radiación: {mutador.efecto_total} unidades de daño")
+                                # Solo mostrar una vez el resultado
+                                print("\nADN Original:")
+                                mostrar_matriz(matriz_original)
+                                print("Nuevo ADN mutado:")
+                                mostrar_matriz(matriz)
+                                break
+                            except ValueError as e:
+                                print(f"\n¡Error! {e}")
+                                print("Por favor, ajuste los parámetros nuevamente.\n")            
+                    else:
                 
-                # Solo mostrar una vez el resultado
-                print("\nADN Original:")
-                mostrar_matriz(matriz_original)
-                print("Nuevo ADN mutado:")
-                mostrar_matriz(matriz)
-                
+                        while True:
+                            try:
+                                print("\nConfigurando mutación viral:")
+                                intensidad = int(input("Agresividad del virus (1-100%): "))
+                                duracion = int(input("Período de infección (1-14 días): "))
+                                mutador = Virus(base, intensidad, duracion)
+                                break
+                            except ValueError as e:
+                                print(f"\n¡Error! {e}")
+                                print("Por favor, ajuste los parámetros nuevamente.\n")
+                    
+                        matriz_original = matriz.copy()  
+                        matriz = mutador.crear_mutante(matriz, (fila, columna))
+                        print(f"\nInfección viral completada:")
+                        print(f"Agresividad: {mutador.intensidad}%")
+                        print(f"Período de infección: {mutador.duracion} días")
+                        print(f"Efecto total viral: {mutador.efecto_total} unidades de daño")                  
             else:
-                if validar_posicion_virus(fila, columna):
-                    while True:
-                        try:
-                            print("\nConfigurando mutación viral:")
-                            intensidad = int(input("Agresividad del virus (1-100%): "))
-                            duracion = int(input("Período de infección (1-14 días): "))
-                            mutador = Virus(base, intensidad, duracion)
-                            break
-                        except ValueError as e:
-                            print(f"\n¡Error! {e}")
-                            print("Por favor, ajuste los parámetros nuevamente.\n")
-                    
-                    matriz_original = matriz.copy()  
-                    matriz = mutador.crear_mutante(matriz, (fila, columna))
-                    print(f"\nInfección viral completada:")
-                    print(f"Agresividad: {mutador.intensidad}%")
-                    print(f"Período de infección: {mutador.duracion} días")
-                    print(f"Efecto total viral: {mutador.efecto_total} unidades de daño")
-                    
-                   
-                else:
-                    print("\nNo se pudo crear la mutación en esa posicion")
-                    continue  
+                print("\nNo se pudo crear la mutación en esa posicion")
+                continue
 
         elif opcion == "3":
             mensaje_sanador = """

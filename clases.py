@@ -1,3 +1,4 @@
+
 from typing import List
 import random
 from random import randint
@@ -132,13 +133,21 @@ class Radiacion(Mutador):
         
         if orientacion_de_la_mutacion.upper() == 'H':
             for i in range(4):
-                if y + i < len(matriz_mutada[0]):
-                    matriz_mutada[x][y + i] = self.base_nitrogenada
+                if y > 2:
+                    if y + i < len(matriz_mutada[0]):
+                        matriz_mutada[x][y - i] = self.base_nitrogenada
+                else:
+                    if y + i < len(matriz_mutada[0]):
+                        matriz_mutada[x][y + i] = self.base_nitrogenada    
         
         elif orientacion_de_la_mutacion.upper() == 'V':
             for i in range(4):
-                if x + i < len(matriz_mutada):
-                    matriz_mutada[x + i][y] = self.base_nitrogenada
+                if x > 2:
+                    if x + i < len(matriz_mutada):
+                        matriz_mutada[x - i][y] = self.base_nitrogenada
+                else:
+                    if x + i < len(matriz_mutada):
+                        matriz_mutada[x + i][y] = self.base_nitrogenada    
         
         return [''.join(fila) for fila in matriz_mutada]
 
